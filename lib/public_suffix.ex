@@ -66,8 +66,11 @@ defmodule PublicSuffix do
     end
   end
 
+  data_file = Path.expand("../data/public_suffix_list.dat", __DIR__)
+  @external_resource data_file
+
   rule_maps =
-    Path.expand("../data/public_suffix_list.dat", __DIR__)
+    data_file
     |> File.read!
     |> PublicSuffix.RulesParser.parse_rules
 
