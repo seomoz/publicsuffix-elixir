@@ -7,8 +7,8 @@ defmodule PublicSuffix.TestCaseGenerator do
     |> Path.join("tests.txt")
     |> File.read!
     |> String.split("\n")
-    |> Stream.reject(&(&1 == ""))
     |> Stream.with_index
+    |> Stream.reject(fn {line, _} -> line == "" end)
     |> Stream.drop(@header_line_count)
     # Match on descriptive comment lines (which go before the test cases to which they apply)
     |> Stream.chunk_by(fn {line, _index} -> String.starts_with?(line, "// ") end)
