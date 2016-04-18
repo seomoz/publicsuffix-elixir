@@ -1,0 +1,2 @@
+defmodule PublicSuffix do
+end
