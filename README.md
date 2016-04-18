@@ -8,14 +8,18 @@ the public suffix rules provided by https://publicsuffix.org/:
 > suffixes are `.com`, `.co.uk` and `pvt.k12.ma.us`. The Public Suffix List is
 > a list of all known public suffixes.
 
-This Elixir library provides a means to get the registrable domain part
-from any domain:
+This Elixir library provides a means to get the public suffix and the
+registrable domain from any domain:
 
 ``` iex
 iex(1)> PublicSuffix.registrable_domain("mysite.foo.bar.com")
 "bar.com"
 iex(2)> PublicSuffix.registrable_domain("mysite.foo.bar.co.uk")
 "bar.co.uk"
+iex(3)> PublicSuffix.public_suffix("mysite.foo.bar.com")
+"com"
+iex(4)> PublicSuffix.public_suffix("mysite.foo.bar.co.uk")
+"co.uk"
 ```
 
 The publicsuffix.org data file contains both official ICANN records
@@ -31,8 +35,12 @@ tell it to ignore them:
 ``` iex
 iex(1)> PublicSuffix.registrable_domain("foo.github.io")
 "foo.github.io"
-iex(2)> PublicSuffix.registrable_domain("foo.github.io", ignore_private: true)
+iex(2)> PublicSuffix.public_suffix("foo.github.io")
 "github.io"
+iex(3)> PublicSuffix.registrable_domain("foo.github.io", ignore_private: true)
+"github.io"
+iex(4)> PublicSuffix.public_suffix("foo.github.io", ignore_private: true)
+"io"
 ```
 
 ## Installation
