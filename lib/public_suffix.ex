@@ -6,14 +6,14 @@ defmodule PublicSuffix do
   """
 
   @doc """
-  Extracts the _registerable_ part of the provided domain. The registerable
+  Extracts the _registrable_ part of the provided domain. The registrable
   part is the public suffix plus one additional domain part. For example,
-  given a public suffix of `co.uk`, so `example.co.uk` would be the registerable
+  given a public suffix of `co.uk`, so `example.co.uk` would be the registrable
   domain part.
   """
-  @spec registerable_domain(nil | String.t) :: nil | String.t
-  def registerable_domain(nil), do: nil
-  def registerable_domain(domain) do
+  @spec registrable_domain(nil | String.t) :: nil | String.t
+  def registrable_domain(nil), do: nil
+  def registrable_domain(domain) do
     domain
     # "The domain...must be canonicalized in the normal way for hostnames - lower-case"
     |> String.downcase
@@ -21,14 +21,14 @@ defmodule PublicSuffix do
     |> String.strip(?.)
     # "A domain or rule can be split into a list of labels using the separator "." (dot)."
     |> String.split(".")
-    |> find_registerable_domain_labels
+    |> find_registrable_domain_labels
     |> case do
          nil -> nil
          labels -> Enum.join(labels, ".")
        end
   end
 
-  defp find_registerable_domain_labels(labels) do
+  defp find_registrable_domain_labels(labels) do
     prevailing_rule =
       # "If more than one rule matches, the prevailing rule is the one which is an exception rule."
       find_prevailing_exception_rule(labels) ||

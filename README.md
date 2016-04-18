@@ -8,13 +8,13 @@ the public suffix rules provided by https://publicsuffix.org/:
 > suffixes are `.com`, `.co.uk` and `pvt.k12.ma.us`. The Public Suffix List is
 > a list of all known public suffixes.
 
-This Elixir library provides a means to get the registerable domain part
+This Elixir library provides a means to get the registrable domain part
 from any domain:
 
 ``` iex
-iex(1)> PublicSuffix.registerable_domain("mysite.foo.bar.com")
+iex(1)> PublicSuffix.registrable_domain("mysite.foo.bar.com")
 "bar.com"
-iex(2)> PublicSuffix.registerable_domain("mysite.foo.bar.co.uk")
+iex(2)> PublicSuffix.registrable_domain("mysite.foo.bar.co.uk")
 "bar.co.uk"
 ```
 
