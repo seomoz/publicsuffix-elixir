@@ -49,7 +49,7 @@ defmodule PublicSuffixGeneratedCasesTest do
   use ExUnit.Case
   import PublicSuffix
 
-  for test_case <- PublicSuffix.TestCaseGenerator.test_cases do
+  for test_case <- PublicSuffix.TestCaseGenerator.test_cases, test_case.input do
     @test_case test_case
     expression = "registrable_domain(#{inspect test_case.input}) == #{inspect test_case.output}"
     description = "#{test_case.group_description} ##{test_case.group_case_number} -- line #{test_case.line_number}"
