@@ -24,11 +24,9 @@ defmodule PublicSuffix do
     iex> registrable_domain("foo.github.io")
     "foo.github.io"
   """
-  @spec registrable_domain(nil | String.t) :: nil | String.t
-  @spec registrable_domain(nil | String.t, ignore_private: boolean) :: nil | String.t
-  def registrable_domain(domain, options \\ [ignore_private: false])
-  def registrable_domain(nil, _), do: nil
-  def registrable_domain(domain, options) do
+  @spec registrable_domain(String.t) :: nil | String.t
+  @spec registrable_domain(String.t, ignore_private: boolean) :: nil | String.t
+  def registrable_domain(domain, options \\ [ignore_private: false]) when is_binary(domain) do
     domain
     # "The domain...must be canonicalized in the normal way for hostnames - lower-case"
     |> String.downcase
