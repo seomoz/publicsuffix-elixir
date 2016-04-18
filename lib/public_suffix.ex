@@ -10,10 +10,25 @@ defmodule PublicSuffix do
   part is the public suffix plus one additional domain part. For example,
   given a public suffix of `co.uk`, so `example.co.uk` would be the registrable
   domain part.
+
+  ## Examples
+    iex> registrable_domain("foo.bar.com")
+    "bar.com"
+
+  You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
+
+    iex> registrable_domain("foo.github.io", ignore_private: false)
+    "foo.github.io"
+    iex> registrable_domain("foo.github.io", ignore_private: true)
+    "github.io"
+    iex> registrable_domain("foo.github.io")
+    "foo.github.io"
   """
   @spec registrable_domain(nil | String.t) :: nil | String.t
-  def registrable_domain(nil), do: nil
-  def registrable_domain(domain) do
+  @spec registrable_domain(nil | String.t, ignore_private: boolean) :: nil | String.t
+  def registrable_domain(domain, options \\ [ignore_private: false])
+  def registrable_domain(nil, _), do: nil
+  def registrable_domain(domain, options) do
     domain
     # "The domain...must be canonicalized in the normal way for hostnames - lower-case"
     |> String.downcase
@@ -21,18 +36,20 @@ defmodule PublicSuffix do
     |> String.strip(?.)
     # "A domain or rule can be split into a list of labels using the separator "." (dot)."
     |> String.split(".")
-    |> find_registrable_domain_labels
+    |> find_registrable_domain_labels(options)
     |> case do
          nil -> nil
          labels -> Enum.join(labels, ".")
        end
   end
 
-  defp find_registrable_domain_labels(labels) do
+  defp find_registrable_domain_labels(labels, options) do
+    allowed_rule_types = allowed_rule_types_for(options)
+
     prevailing_rule =
       # "If more than one rule matches, the prevailing rule is the one which is an exception rule."
-      find_prevailing_exception_rule(labels) ||
-      find_prevailing_normal_rule(labels) ||
+      find_prevailing_exception_rule(labels, allowed_rule_types) ||
+      find_prevailing_normal_rule(labels, allowed_rule_types) ||
       # "If no rules match, the prevailing rule is "*"."
       ["*"]
 
@@ -49,64 +66,39 @@ defmodule PublicSuffix do
     end
   end
 
-  punycode_domain = fn rule ->
-    rule
-    |> :xmerl_ucs.from_utf8
-    |> :idna.to_ascii
-    |> to_string
-  end
-
-  {exception_rules, normal_rules} =
+  rule_maps =
     Path.expand("../data/public_suffix_list.dat", __DIR__)
     |> File.read!
-    # "The list is a set of rules, with one rule per line."
-    |> String.split("\n")
-    # "...entire lines can also be commented using //.
-    # Each line which is not entirely whitespace or begins with a comment
-    # contains a rule."
-    |> Stream.reject(&(&1 =~ ~r/^\s*$/ || String.starts_with?(&1, "//")))
-    # "Each line is only read up to the first whitespace"
-    |> Stream.map(&String.rstrip/1)
-    |> Stream.flat_map(fn rule -> [rule, punycode_domain.(rule)] end)
-    # "An exclamation mark (!) at the start of a rule marks an exception to a
-    # previous wildcard rule."
-    |> Enum.partition(&String.starts_with?(&1, "!"))
+    |> PublicSuffix.RulesParser.parse_rules
 
-  # TODO: "Wildcards are not restricted to appear only in the leftmost position"
-  {wild_card_rules, full_match_rules} = Enum.partition(normal_rules, &String.starts_with?(&1, "*."))
-
-  to_domain_label_set = fn rules ->
-    rules
-    # "A domain or rule can be split into a list of labels using the separator "." (dot)."
-    |> Stream.map(&String.split(&1, "."))
-    |> MapSet.new
-  end
-
-  # "A rule may begin with a "!" (exclamation mark). If it does, it is labelled
-  # as a "exception rule" and then treated as if the exclamation mark is not
-  # present."
-  @exception_rules exception_rules
-    |> Stream.map(&String.lstrip(&1, ?!))
-    |> to_domain_label_set.()
-  defp find_prevailing_exception_rule([]), do: nil
-  defp find_prevailing_exception_rule([_ | suffix] = domain_labels) do
-    if domain_labels in @exception_rules do
+  @exception_rules rule_maps.exception_rules
+  defp find_prevailing_exception_rule([], _allowed_rule_types), do: nil
+  defp find_prevailing_exception_rule([_ | suffix] = domain_labels, allowed_rule_types) do
+    if @exception_rules[domain_labels] in allowed_rule_types do
       # "If the prevailing rule is a exception rule, modify it by removing the leftmost label."
       suffix
     else
-      find_prevailing_exception_rule(suffix)
+      find_prevailing_exception_rule(suffix, allowed_rule_types)
     end
   end
 
-  @full_match_rules to_domain_label_set.(full_match_rules)
-  @wild_card_rules to_domain_label_set.(wild_card_rules)
-  defp find_prevailing_normal_rule([]), do: nil
-  defp find_prevailing_normal_rule([_ | suffix] = domain_labels) do
+  @exact_match_rules rule_maps.exact_match_rules
+  @wild_card_rules rule_maps.wild_card_rules
+  defp find_prevailing_normal_rule([], _allowed_rule_types), do: nil
+  defp find_prevailing_normal_rule([_ | suffix] = domain_labels, allowed_rule_types) do
     cond do
-      domain_labels in @full_match_rules -> domain_labels
+      @exact_match_rules[domain_labels] in allowed_rule_types -> domain_labels
       # TODO: "Wildcards are not restricted to appear only in the leftmost position"
-      ["*" | suffix] in @wild_card_rules -> domain_labels
-      true -> find_prevailing_normal_rule(suffix)
+      @wild_card_rules[["*" | suffix]] in allowed_rule_types -> domain_labels
+      true -> find_prevailing_normal_rule(suffix, allowed_rule_types)
+    end
+  end
+
+  defp allowed_rule_types_for(options) do
+    if Keyword.get(options, :ignore_private, false) do
+      [:icann]
+    else
+      [:icann, :private]
     end
   end
 end
