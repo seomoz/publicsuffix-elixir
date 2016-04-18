@@ -49,6 +49,13 @@ defmodule PublicSuffix do
     end
   end
 
+  punycode_domain = fn rule ->
+    rule
+    |> :xmerl_ucs.from_utf8
+    |> :idna.to_ascii
+    |> to_string
+  end
+
   {exception_rules, normal_rules} =
     Path.expand("../data/public_suffix_list.dat", __DIR__)
     |> File.read!
@@ -60,14 +67,7 @@ defmodule PublicSuffix do
     |> Stream.reject(&(&1 =~ ~r/^\s*$/ || String.starts_with?(&1, "//")))
     # "Each line is only read up to the first whitespace"
     |> Stream.map(&String.rstrip/1)
-    |> Stream.flat_map(fn rule ->
-      [rule,
-        rule
-        |> :xmerl_ucs.from_utf8
-        |> :idna.to_ascii
-        |> to_string
-      ]
-    end)
+    |> Stream.flat_map(fn rule -> [rule, punycode_domain.(rule)] end)
     # "An exclamation mark (!) at the start of a rule marks an exception to a
     # previous wildcard rule."
     |> Enum.partition(&String.starts_with?(&1, "!"))
