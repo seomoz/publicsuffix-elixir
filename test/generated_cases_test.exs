@@ -47,8 +47,7 @@ end
 
 defmodule PublicSuffixGeneratedCasesTest do
   use ExUnit.Case
-  doctest PublicSuffix
-  import PublicSuffix, only: [registrable_domain: 1]
+  import PublicSuffix
 
   for test_case <- PublicSuffix.TestCaseGenerator.test_cases do
     @test_case test_case

@@ -18,6 +18,23 @@ iex(2)> PublicSuffix.registrable_domain("mysite.foo.bar.co.uk")
 "bar.co.uk"
 ```
 
+The publicsuffix.org data file contains both official ICANN records
+and private records:
+
+> ICANN domains are those delegated by ICANN or part of the IANA root zone database. The authorized registry may express further policies on how they operate the TLD, such as subdivisions within it. Updates to this section can be submitted by anyone, but if they are not an authorized representative of the registry then they will need to back up their claims of error with documentation from the registry's website.
+>
+> PRIVATE domains are amendments submitted by the domain holder, as an expression of how they operate their domain security policy. Updates to this section are only accepted from authorized representatives of the domain registrant. This is so we can be certain they know what they are getting into.
+
+By default, `PublicSuffix` considers private domain records, but you can
+tell it to ignore them:
+
+``` iex
+iex(1)> PublicSuffix.registrable_domain("foo.github.io")
+"foo.github.io"
+iex(2)> PublicSuffix.registrable_domain("foo.github.io", ignore_private: true)
+"github.io"
+```
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
