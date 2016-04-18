@@ -1,0 +1,7 @@
+sudo: false
+language: elixir
+otp_release:
+  - 18.1
+elixir:
+  - 1.2.4
+script: "script/ci_build"
