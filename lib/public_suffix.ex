@@ -11,9 +11,9 @@ defmodule PublicSuffix do
   given a public suffix of `co.uk`, so `example.co.uk` would be the registerable
   domain part.
   """
-  @spec registerable_domain_part(nil | String.t) :: nil | String.t
-  def registerable_domain_part(nil), do: nil
-  def registerable_domain_part(domain) do
+  @spec registerable_domain(nil | String.t) :: nil | String.t
+  def registerable_domain(nil), do: nil
+  def registerable_domain(domain) do
     domain
     # "The domain...must be canonicalized in the normal way for hostnames - lower-case"
     |> String.downcase

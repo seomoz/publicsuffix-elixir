@@ -48,11 +48,11 @@ end
 defmodule PublicSuffixGeneratedCasesTest do
   use ExUnit.Case
   doctest PublicSuffix
-  import PublicSuffix, only: [registerable_domain_part: 1]
+  import PublicSuffix, only: [registerable_domain: 1]
 
   for test_case <- PublicSuffix.TestCaseGenerator.test_cases do
     @test_case test_case
-    expression = "registerable_domain_part(#{inspect test_case.input}) == #{inspect test_case.output}"
+    expression = "registerable_domain(#{inspect test_case.input}) == #{inspect test_case.output}"
     description = "#{test_case.group_description} ##{test_case.group_case_number} -- line #{test_case.line_number}"
     test_name = case test_case.group_description do
       "IDN labels" -> "#{description} (can't embed expression in test name due to chinese characters)"
@@ -70,7 +70,7 @@ defmodule PublicSuffixGeneratedCasesTest do
       test_case.input == ".example.com"
     )
     test test_name do
-      assert registerable_domain_part(@test_case.input) == @test_case.output
+      assert registerable_domain(@test_case.input) == @test_case.output
     end
   end
 end

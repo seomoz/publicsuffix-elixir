@@ -12,9 +12,9 @@ This Elixir library provides a means to get the registerable domain part
 from any domain:
 
 ``` iex
-iex(1)> PublicSuffix.registerable_domain_part("mysite.foo.bar.com")
+iex(1)> PublicSuffix.registerable_domain("mysite.foo.bar.com")
 "bar.com"
-iex(2)> PublicSuffix.registerable_domain_part("mysite.foo.bar.co.uk")
+iex(2)> PublicSuffix.registerable_domain("mysite.foo.bar.co.uk")
 "bar.co.uk"
 ```
 
