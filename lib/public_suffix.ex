@@ -32,7 +32,7 @@ defmodule PublicSuffix do
   @doc """
   Extracts the _registrable_ part of the provided domain. The registrable
   part is the public suffix plus one additional domain part. For example,
-  given a public suffix of `co.uk`, so `example.co.uk` would be the registrable
+  given a public suffix of `co.uk`, `example.co.uk` would be the registrable
   domain part. If the domain does not contain a registrable part (for example,
   if the domain is itself a public suffix), this function will return `nil`.
 
@@ -75,25 +75,27 @@ defmodule PublicSuffix do
   end
 
   defp extract_labels_using_rules(labels, extra_label_parts, options) do
-    allowed_rule_types = allowed_rule_types_for(options)
-
-    prevailing_rule =
-      # "If more than one rule matches, the prevailing rule is the one which is an exception rule."
-      find_prevailing_exception_rule(labels, allowed_rule_types) ||
-      find_prevailing_normal_rule(labels, allowed_rule_types) ||
-      # "If no rules match, the prevailing rule is "*"."
-      ["*"]
-
-    num_labels = length(prevailing_rule) + extra_label_parts
+    num_labels =
+      labels
+      |> find_prevailing_rule(options)
+      |> length
+      |> +(extra_label_parts)
 
     if length(labels) >= num_labels do
-      labels
-      |> Enum.reverse
-      |> Enum.take(num_labels)
-      |> Enum.reverse
+      take_last_n(labels, num_labels)
     else
       nil
     end
+  end
+
+  defp find_prevailing_rule(labels, options) do
+    allowed_rule_types = allowed_rule_types_for(options)
+
+    # "If more than one rule matches, the prevailing rule is the one which is an exception rule."
+    find_prevailing_exception_rule(labels, allowed_rule_types) ||
+    find_prevailing_normal_rule(labels, allowed_rule_types) ||
+    # "If no rules match, the prevailing rule is "*"."
+    ["*"]
   end
 
   data_file = Path.expand("../data/public_suffix_list.dat", __DIR__)
@@ -133,5 +135,12 @@ defmodule PublicSuffix do
     else
       [:icann, :private]
     end
+  end
+
+  defp take_last_n(list, n) do
+    list
+    |> Enum.reverse
+    |> Enum.take(n)
+    |> Enum.reverse
   end
 end
