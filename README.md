@@ -59,6 +59,16 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
           [applications: [:public_suffix]]
         end
 
+## Updating Public Suffix Data
+
+`PublicSuffix` is bundled with a cached version of the public suffix rules and tests from
+publicsuffix.org, but can be configured to download these files on compilation by adding the
+following line to your project's config.exs:
+
+```elixir
+config :public_suffix, download_data_on_compile: true
+```
+
 ## Known Issues
 
 The [Public Suffix specification](https://publicsuffix.org/list/)
