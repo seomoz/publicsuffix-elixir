@@ -5,6 +5,8 @@ defmodule PublicSuffix do
   showing how individual lines of code relate to the specification.
   """
 
+  @type options :: [ignore_private: boolean]
+
   @doc """
   Extracts the public suffix from the provided domain based on the publicsuffix.org rules.
 
@@ -21,7 +23,9 @@ defmodule PublicSuffix do
     iex> public_suffix("foo.github.io")
     "github.io"
   """
-  def public_suffix(domain, options \\ [ignore_private: false]) when is_binary(domain) do
+  @spec public_suffix(String.t) :: nil | String.t
+  @spec public_suffix(String.t, options) :: nil | String.t
+  def public_suffix(domain, options \\ []) when is_binary(domain) do
     parse_domain(domain, options, 0)
   end
 
@@ -29,11 +33,14 @@ defmodule PublicSuffix do
   Extracts the _registrable_ part of the provided domain. The registrable
   part is the public suffix plus one additional domain part. For example,
   given a public suffix of `co.uk`, so `example.co.uk` would be the registrable
-  domain part.
+  domain part. If the domain does not contain a registrable part (for example,
+  if the domain is itself a public suffix), this function will return `nil`.
 
   ## Examples
     iex> registrable_domain("foo.bar.com")
     "bar.com"
+    iex> registrable_domain("com")
+    nil
 
   You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
 
@@ -45,8 +52,8 @@ defmodule PublicSuffix do
     "foo.github.io"
   """
   @spec registrable_domain(String.t) :: nil | String.t
-  @spec registrable_domain(String.t, ignore_private: boolean) :: nil | String.t
-  def registrable_domain(domain, options \\ [ignore_private: false]) when is_binary(domain) do
+  @spec registrable_domain(String.t, options) :: nil | String.t
+  def registrable_domain(domain, options \\ []) when is_binary(domain) do
     # "The registered or registrable domain is the public suffix plus one additional label."
     parse_domain(domain, options, 1)
   end
