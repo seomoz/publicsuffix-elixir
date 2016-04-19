@@ -58,12 +58,13 @@ defmodule PublicSuffix do
     parse_domain(domain, options, 1)
   end
 
+  # Inputs with a leading dot should be treated as a special case.
+  # see https://github.com/publicsuffix/list/issues/208
+  defp parse_domain("." <> _domain, _, _), do: nil
   defp parse_domain(domain, options, extra_label_parts) do
     domain
     # "The domain...must be canonicalized in the normal way for hostnames - lower-case"
     |> String.downcase
-    # "Empty labels are not permitted, meaning that leading and trailing dots are ignored."
-    |> String.strip(?.)
     # "A domain or rule can be split into a list of labels using the separator "." (dot)."
     |> String.split(".")
     |> extract_labels_using_rules(extra_label_parts, options)
