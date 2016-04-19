@@ -2,6 +2,10 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+if System.get_env("PUBLIC_SUFFIX_DOWNLOAD_DATA_ON_COMPILE") do
+  config :public_suffix, download_data_on_compile: true
+end
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
