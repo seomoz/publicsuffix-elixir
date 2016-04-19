@@ -32,7 +32,7 @@ defmodule PublicSuffix do
   @doc """
   Extracts the _registrable_ part of the provided domain. The registrable
   part is the public suffix plus one additional domain part. For example,
-  given a public suffix of `co.uk`, so `example.co.uk` would be the registrable
+  given a public suffix of `co.uk`, `example.co.uk` would be the registrable
   domain part. If the domain does not contain a registrable part (for example,
   if the domain is itself a public suffix), this function will return `nil`.
 
