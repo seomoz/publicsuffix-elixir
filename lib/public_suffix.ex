@@ -1,4 +1,6 @@
 defmodule PublicSuffix do
+  import PublicSuffix.{RemoteFileFetcher, RulesParser}
+
   @moduledoc """
   Implements the publicsuffix algorithm described at https://publicsuffix.org/list/.
   Comments throughout this module are direct quotes from https://publicsuffix.org/list/,
@@ -101,10 +103,24 @@ defmodule PublicSuffix do
   data_file = Path.expand("../data/public_suffix_list.dat", __DIR__)
   @external_resource data_file
 
-  rule_maps =
-    data_file
-    |> File.read!
-    |> PublicSuffix.RulesParser.parse_rules
+  raw_data = if Application.get_env(:public_suffix, :download_data_on_compile, false) do
+    case fetch_remote_file("https://publicsuffix.org/list/public_suffix_list.dat") do
+      {:ok, data} ->
+        IO.puts "PublicSuffix: fetched fresh data file for compilation."
+        data
+      {:error, error} ->
+         raise """
+         PublicSuffix: failed to fetch fresh data file for compilation:
+         #{inspect error}
+
+         Try again or change `download_data_on_compile` config to `false` to use the cached copy of the rules file.
+         """
+    end
+  else
+    File.read!(data_file)
+  end
+
+  rule_maps = parse_rules(raw_data)
 
   @exception_rules rule_maps.exception_rules
   defp find_prevailing_exception_rule([], _allowed_rule_types), do: nil

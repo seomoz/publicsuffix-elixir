@@ -59,6 +59,30 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
           [applications: [:public_suffix]]
         end
 
+## Configuration
+
+`PublicSuffix` is bundled with a cached copy of the public suffix rules from
+publicsuffix.org, but can be configured to download the rules files on compilation
+by adding the following line to your project's `config.exs`:
+
+```elixir
+config :public_suffix, download_data_on_compile: true
+```
+
+There are pros and cons to both approaches; which you choose will depend
+on the needs of your project:
+
+* Setting `download_data_on_compile` to `true` will ensure that the
+  rules are always up-to-date (as of the time you last compiled) but
+  could introduce an instability. While we have tried to implement
+  the logic in this library according to the publicsuffix.org spec,
+  one can imagine future rule changes not being handled properly by
+  the existing logic and manifesting itself in a new bug.
+* Setting `download_data_on_compile` to `false` (or not setting it at
+  all) ensures stable, consistent behavior. In the context of your
+  project, you may want compilation to be deterministic. Compilation
+  is also a bit faster when a new copy of the rules is not downloaded.
+
 ## Known Issues
 
 The [Public Suffix specification](https://publicsuffix.org/list/)
