@@ -44,6 +44,8 @@ defmodule PublicSuffix.TestCaseGenerator do
   defp parse_arg(string), do: String.strip(string, ?')
 
   defp public_suffix_output(nil, nil), do: nil
+  # Inputs with a leading dot are a special case: the output should always be `nil`.
+  defp public_suffix_output(nil, "." <> _), do: nil
   defp public_suffix_output(nil, input) do
     # If the `registrable_domain` is `nil`, it is generally because the provided input
     # is itself a public suffix and therefore has no registrable domain. However, the inputs
@@ -78,16 +80,8 @@ defmodule PublicSuffixGeneratedCasesTest do
 
   for test_case <- PublicSuffix.TestCaseGenerator.test_cases, test_case.input do
     @test_case test_case
-    should_skip? = (
-      # the test file has some commented out tests.
-      String.starts_with?(test_case.input || "", "//") ||
-      # These two test cases are inconsistent with our reading
-      # of the spec. TODO: figure out if we are wrong or the
-      # tests are wrong.
-      # See: https://github.com/publicsuffix/list/issues/208
-      test_case.input == ".example.example" ||
-      test_case.input == ".example.com"
-    )
+    # the test file has some commented out tests.
+    should_skip? = String.starts_with?(test_case.input || "", "//")
 
     @tag skip: should_skip?
     test test_name.(test_case, "registrable_domain", :registrable_domain_output) do
