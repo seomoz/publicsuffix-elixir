@@ -2,12 +2,15 @@ defmodule PublicSuffix.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :public_suffix,
-     version: "0.0.1",
-     elixir: "~> 1.2",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps]
+    [
+      app: :public_suffix,
+      version: "0.0.1",
+      elixir: "~> 1.2",
+      build_embedded: Mix.env == :prod,
+      start_permanent: Mix.env == :prod,
+      deps: deps,
+      compilers: compilers,
+    ]
   end
 
   # Configuration for the OTP application
@@ -36,33 +39,12 @@ defmodule PublicSuffix.Mixfile do
       {:idna, "~> 1.2"},
     ]
   end
-end
 
-defmodule Mix.Tasks.PublicSuffix.SyncFiles do
-  use Mix.Task
-
-  @shortdoc "Syncs the files from publicsuffix.org"
-  @data_dir Path.expand("data", __DIR__)
-
-  def run(_) do
-    File.mkdir_p!(@data_dir)
-    sync_file "https://publicsuffix.org/list/public_suffix_list.dat", "public_suffix_list.dat"
-    sync_file "https://raw.githubusercontent.com/publicsuffix/list/master/tests/tests.txt", "tests.txt"
-  end
-
-  defp sync_file(remote_url, local_path) do
-    local_path = Path.join(@data_dir, local_path)
-
-    [
-      "curl",
-      "-s",
-      remote_url,
-      "--output",
-      local_path,
-    ]
-    |> Enum.join(" ")
-    |> Mix.shell.cmd
-
-    IO.puts "Synced #{remote_url} to #{local_path}"
+  defp compilers do
+    if Application.get_env(:public_suffix, :download_data_on_compile, false) do
+      [:public_suffix | Mix.compilers]
+    else
+      Mix.compilers
+    end
   end
 end
