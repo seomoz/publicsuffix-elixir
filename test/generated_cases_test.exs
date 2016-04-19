@@ -73,7 +73,7 @@ defmodule PublicSuffixGeneratedCasesTest do
       expression = "#{fun_name}(#{inspect test_case.input}) == #{inspect output}"
       description = "#{test_case.group_description} ##{test_case.group_case_number} -- line #{test_case.line_number}"
       case test_case.group_description do
-        "IDN labels" -> "#{description} (can't embed expression in test name due to chinese characters)"
+        "IDN labels" -> "#{fun_name} (#{description}) (can't embed expression in test name due to chinese characters)"
         _otherwise -> "#{expression} (#{description})"
       end
     end
