@@ -27,9 +27,7 @@ defmodule PublicSuffix.TestCaseGenerator do
   defp generate_test_case({{test_case_line, line_index}, group_case_index}, group_description) do
     [input, registrable_domain_output] =
       test_case_line
-      |> String.replace_prefix("checkPublicSuffix(", "")
-      |> String.replace_suffix(");", "")
-      |> String.split(", ")
+      |> String.split(" ")
       |> Enum.map(&parse_arg/1)
 
     %{
