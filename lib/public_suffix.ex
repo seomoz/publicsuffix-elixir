@@ -79,7 +79,7 @@ defmodule PublicSuffix do
       labels
       |> find_prevailing_rule(options)
       |> length
-      |> Kernel.+(extra_label_parts)
+      |> +(extra_label_parts)
 
     if length(labels) >= num_labels do
       take_last_n(labels, num_labels)
