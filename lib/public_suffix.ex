@@ -5,15 +5,42 @@ defmodule PublicSuffix do
   showing how individual lines of code relate to the specification.
   """
 
+  @type options :: [ignore_private: boolean]
+
+  @doc """
+  Extracts the public suffix from the provided domain based on the publicsuffix.org rules.
+
+  ## Examples
+    iex> public_suffix("foo.bar.com")
+    "com"
+
+  You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
+
+    iex> public_suffix("foo.github.io", ignore_private: false)
+    "github.io"
+    iex> public_suffix("foo.github.io", ignore_private: true)
+    "io"
+    iex> public_suffix("foo.github.io")
+    "github.io"
+  """
+  @spec public_suffix(String.t) :: nil | String.t
+  @spec public_suffix(String.t, options) :: nil | String.t
+  def public_suffix(domain, options \\ []) when is_binary(domain) do
+    parse_domain(domain, options, 0)
+  end
+
   @doc """
   Extracts the _registrable_ part of the provided domain. The registrable
   part is the public suffix plus one additional domain part. For example,
   given a public suffix of `co.uk`, so `example.co.uk` would be the registrable
-  domain part.
+  domain part. If the domain does not contain a registrable part (for example,
+  if the domain is itself a public suffix), this function will return `nil`.
 
   ## Examples
     iex> registrable_domain("foo.bar.com")
     "bar.com"
+    iex> registrable_domain("com")
+    nil
 
   You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
 
@@ -25,8 +52,13 @@ defmodule PublicSuffix do
     "foo.github.io"
   """
   @spec registrable_domain(String.t) :: nil | String.t
-  @spec registrable_domain(String.t, ignore_private: boolean) :: nil | String.t
-  def registrable_domain(domain, options \\ [ignore_private: false]) when is_binary(domain) do
+  @spec registrable_domain(String.t, options) :: nil | String.t
+  def registrable_domain(domain, options \\ []) when is_binary(domain) do
+    # "The registered or registrable domain is the public suffix plus one additional label."
+    parse_domain(domain, options, 1)
+  end
+
+  defp parse_domain(domain, options, extra_label_parts) do
     domain
     # "The domain...must be canonicalized in the normal way for hostnames - lower-case"
     |> String.downcase
@@ -34,14 +66,14 @@ defmodule PublicSuffix do
     |> String.strip(?.)
     # "A domain or rule can be split into a list of labels using the separator "." (dot)."
     |> String.split(".")
-    |> find_registrable_domain_labels(options)
+    |> extract_labels_using_rules(extra_label_parts, options)
     |> case do
          nil -> nil
          labels -> Enum.join(labels, ".")
        end
   end
 
-  defp find_registrable_domain_labels(labels, options) do
+  defp extract_labels_using_rules(labels, extra_label_parts, options) do
     allowed_rule_types = allowed_rule_types_for(options)
 
     prevailing_rule =
@@ -51,13 +83,12 @@ defmodule PublicSuffix do
       # "If no rules match, the prevailing rule is "*"."
       ["*"]
 
-    rule_size = length(prevailing_rule)
+    num_labels = length(prevailing_rule) + extra_label_parts
 
-    if length(labels) > rule_size do
+    if length(labels) >= num_labels do
       labels
       |> Enum.reverse
-      # "The registered or registrable domain is the public suffix plus one additional label."
-      |> Enum.take(rule_size + 1)
+      |> Enum.take(num_labels)
       |> Enum.reverse
     else
       nil
