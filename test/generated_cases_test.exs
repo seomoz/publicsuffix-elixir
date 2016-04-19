@@ -67,16 +67,16 @@ defmodule PublicSuffixGeneratedCasesTest do
   use ExUnit.Case
   import PublicSuffix
 
-    test_name = fn test_case, fun_name, output_field ->
-      output = Map.fetch!(test_case, output_field)
+  test_name = fn test_case, fun_name, output_field ->
+    output = Map.fetch!(test_case, output_field)
 
-      expression = "#{fun_name}(#{inspect test_case.input}) == #{inspect output}"
-      description = "#{test_case.group_description} ##{test_case.group_case_number} -- line #{test_case.line_number}"
-      case test_case.group_description do
-        "IDN labels" -> "#{fun_name} (#{description}) (can't embed expression in test name due to chinese characters)"
-        _otherwise -> "#{expression} (#{description})"
-      end
+    expression = "#{fun_name}(#{inspect test_case.input}) == #{inspect output}"
+    description = "#{test_case.group_description} ##{test_case.group_case_number} -- line #{test_case.line_number}"
+    case test_case.group_description do
+      "IDN labels" -> "#{fun_name} (#{description}) (can't embed expression in test name due to chinese characters)"
+      _otherwise -> "#{expression} (#{description})"
     end
+  end
 
   for test_case <- PublicSuffix.TestCaseGenerator.test_cases, test_case.input do
     @test_case test_case
