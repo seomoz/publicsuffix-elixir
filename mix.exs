@@ -15,8 +15,10 @@ defmodule PublicSuffix.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [
+      # :idna is intentionally NOT included in this list because it is
+      # only used at compile time, as part of processing the publicsuffix.org
+      # rules file. So it is not needed at runtime.
       applications: [
-        :idna,
         :logger,
       ]
     ]
@@ -33,7 +35,7 @@ defmodule PublicSuffix.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:idna, "~> 1.2"},
+      {:idna, "~> 2.0"},
     ]
   end
 end
