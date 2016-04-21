@@ -55,7 +55,8 @@ defmodule PublicSuffix.RulesParser do
     }
   end
 
-  defp punycode_domain(rule) do
+  @doc false
+  def punycode_domain(rule) do
     rule
     |> :xmerl_ucs.from_utf8
     |> :idna.to_ascii

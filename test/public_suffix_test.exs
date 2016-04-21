@@ -27,4 +27,25 @@ defmodule PublicSuffix.PublicSuffixTest do
       assert registrable_domain(@input, ignore_private: true) == @expected_without_private
     end
   end
+
+  test "unicode domains are correctly NFKC normalized when punycoding them" do
+    # Both of these strings are different unicode forms of "ábc.co.uk".
+    # The example came from:
+    # ftp://ftp.unicode.org/Public/UNIDATA/NormalizationTest.txt
+    # (see LATIN SMALL LETTER A WITH ACUTE)
+    normalized_form = "\u00E1bc.co.uk"
+    alternate_form = "\u0061\u0301bc.co.uk"
+
+    assert alternate_form != normalized_form
+    assert roundtrip_through_punycoding(alternate_form) == normalized_form
+    assert roundtrip_through_punycoding(normalized_form) == normalized_form
+  end
+
+  defp roundtrip_through_punycoding(domain) do
+    domain
+    |> PublicSuffix.RulesParser.punycode_domain
+    |> to_char_list
+    |> :idna.from_ascii
+    |> to_string
+  end
 end
