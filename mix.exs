@@ -55,7 +55,7 @@ defmodule PublicSuffix.Mixfile do
   end
 
   defp tag_version(_args) do
-    version = project.version
+    version = Keyword.fetch!(project, :version)
     System.cmd("git", ["tag", "-a", "-m", "Version #{version}", "v#{version}"])
     System.cmd("git", ["push", "origin"])
     System.cmd("git", ["push", "origin", "--tags"])
