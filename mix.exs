@@ -7,6 +7,7 @@ defmodule PublicSuffix.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     aliases: aliases,
      description: description,
      package: package,
      deps: deps]
@@ -45,6 +46,19 @@ defmodule PublicSuffix.Mixfile do
       links: %{"GitHub" => "https://github.com/seomoz/publicsuffix-elixir",
                "Public Suffix List" => "https://publicsuffix.org/"},
     ]
+  end
+
+  defp aliases do
+    [
+      "hex.publish": ["hex.publish", &tag_version/1],
+    ]
+  end
+
+  defp tag_version(_args) do
+    version = project.version
+    System.cmd("git", ["tag", "-a", "-m", "Version #{version}", "v#{version}"])
+    System.cmd("git", ["push", "origin"])
+    System.cmd("git", ["push", "origin", "--tags"])
   end
 end
 
