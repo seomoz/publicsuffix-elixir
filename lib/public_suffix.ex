@@ -13,17 +13,18 @@ defmodule PublicSuffix do
   Extracts the public suffix from the provided domain based on the publicsuffix.org rules.
 
   ## Examples
-    iex> public_suffix("foo.bar.com")
-    "com"
+
+      iex> public_suffix("foo.bar.com")
+      "com"
 
   You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
 
-    iex> public_suffix("foo.github.io", ignore_private: false)
-    "github.io"
-    iex> public_suffix("foo.github.io", ignore_private: true)
-    "io"
-    iex> public_suffix("foo.github.io")
-    "github.io"
+      iex> public_suffix("foo.github.io", ignore_private: false)
+      "github.io"
+      iex> public_suffix("foo.github.io", ignore_private: true)
+      "io"
+      iex> public_suffix("foo.github.io")
+      "github.io"
   """
   @spec public_suffix(String.t) :: nil | String.t
   @spec public_suffix(String.t, options) :: nil | String.t
@@ -39,19 +40,20 @@ defmodule PublicSuffix do
   if the domain is itself a public suffix), this function will return `nil`.
 
   ## Examples
-    iex> registrable_domain("foo.bar.com")
-    "bar.com"
-    iex> registrable_domain("com")
-    nil
+
+      iex> registrable_domain("foo.bar.com")
+      "bar.com"
+      iex> registrable_domain("com")
+      nil
 
   You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
 
-    iex> registrable_domain("foo.github.io", ignore_private: false)
-    "foo.github.io"
-    iex> registrable_domain("foo.github.io", ignore_private: true)
-    "github.io"
-    iex> registrable_domain("foo.github.io")
-    "foo.github.io"
+      iex> registrable_domain("foo.github.io", ignore_private: false)
+      "foo.github.io"
+      iex> registrable_domain("foo.github.io", ignore_private: true)
+      "github.io"
+      iex> registrable_domain("foo.github.io")
+      "foo.github.io"
   """
   @spec registrable_domain(String.t) :: nil | String.t
   @spec registrable_domain(String.t, options) :: nil | String.t
