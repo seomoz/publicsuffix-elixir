@@ -1,5 +1,5 @@
-### Development
-[Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.2.0...master)
+### 0.2.1 / 2016-05-20
+[Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.2.0...v0.2.1)
 
 Bug Fixes:
 
