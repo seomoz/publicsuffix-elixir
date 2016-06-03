@@ -1,3 +1,11 @@
+### 0.3.0 / 2016-06-03
+[Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.2.1...v0.3.0)
+
+Enhancements:
+
+* Add `prevailing_rule/2` and `matches_explicit_rule?/1` for working
+  with rules. (Anders Jensen-Urstad, #17)
+
 ### 0.2.1 / 2016-05-20
 [Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.2.0...v0.2.1)
 
