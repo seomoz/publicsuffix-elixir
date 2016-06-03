@@ -20,6 +20,14 @@ iex(3)> PublicSuffix.public_suffix("mysite.foo.bar.com")
 "com"
 iex(4)> PublicSuffix.public_suffix("mysite.foo.bar.co.uk")
 "co.uk"
+iex(5)> PublicSuffix.prevailing_rule("mysite.foo.bar.com")
+"com"
+iex(6)> PublicSuffix.prevailing_rule("mysite.example")
+"*"
+iex(7)> PublicSuffix.matches_explicit_rule?("mysite.foo.bar.com")
+true
+iex(8)> PublicSuffix.matches_explicit_rule?("mysite.example")
+false
 ```
 
 The publicsuffix.org data file contains both official ICANN records

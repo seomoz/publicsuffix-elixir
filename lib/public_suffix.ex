@@ -26,7 +26,6 @@ defmodule PublicSuffix do
       iex> public_suffix("foo.github.io")
       "github.io"
   """
-  @spec public_suffix(String.t) :: nil | String.t
   @spec public_suffix(String.t, options) :: nil | String.t
   def public_suffix(domain, options \\ []) when is_binary(domain) do
     parse_domain(domain, options, 0)
@@ -55,11 +54,72 @@ defmodule PublicSuffix do
       iex> registrable_domain("foo.github.io")
       "foo.github.io"
   """
-  @spec registrable_domain(String.t) :: nil | String.t
   @spec registrable_domain(String.t, options) :: nil | String.t
   def registrable_domain(domain, options \\ []) when is_binary(domain) do
     # "The registered or registrable domain is the public suffix plus one additional label."
     parse_domain(domain, options, 1)
+  end
+
+  @doc """
+  Parses the provided domain and returns the prevailing rule based on the
+  publicsuffix.org rules. If no rules match, the prevailing rule is "*",
+  unless the provided domain has a leading dot, in which case the input is
+  invalid and the function returns `nil`.
+
+  ## Examples
+
+      iex> prevailing_rule("foo.bar.com")
+      "com"
+      iex> prevailing_rule("co.uk")
+      "co.uk"
+      iex> prevailing_rule("foo.ck")
+      "*.ck"
+      iex> prevailing_rule("foobar.example")
+      "*"
+
+  You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
+
+      iex> prevailing_rule("foo.github.io", ignore_private: false)
+      "github.io"
+      iex> prevailing_rule("foo.github.io", ignore_private: true)
+      "io"
+      iex> prevailing_rule("foo.github.io")
+      "github.io"
+  """
+  @spec prevailing_rule(String.t, options) :: nil | String.t
+  def prevailing_rule(domain, options \\ [])
+  def prevailing_rule("." <> _domain, _), do: nil
+  def prevailing_rule(domain, options) when is_binary(domain) do
+    domain
+    |> String.downcase
+    |> String.split(".")
+    |> find_prevailing_rule(options)
+    |> case do
+         {:exception, rule} -> "!" <> Enum.join(rule, ".")
+         {:normal, rule} -> Enum.join(rule, ".")
+       end
+  end
+
+  @doc """
+  Checks whether the provided domain matches an explicit rule in the
+  publicsuffix.org rules.
+
+  ## Examples
+
+      iex> matches_explicit_rule?("foo.bar.com")
+      true
+      iex> matches_explicit_rule?("com")
+      true
+      iex> matches_explicit_rule?("foobar.example")
+      false
+
+  You can use the `ignore_private` keyword to exclude private (non-ICANN) domains.
+  """
+  @spec matches_explicit_rule?(String.t | nil, options) :: boolean
+  def matches_explicit_rule?(domain, options \\ [])
+  def matches_explicit_rule?(nil, _options), do: false
+  def matches_explicit_rule?(domain, options) when is_binary(domain) do
+    !(prevailing_rule(domain, options) in [nil, "*"])
   end
 
   # Inputs with a leading dot should be treated as a special case.
@@ -82,6 +142,11 @@ defmodule PublicSuffix do
     num_labels =
       labels
       |> find_prevailing_rule(options)
+      |> case do
+           # "If the prevailing rule is a exception rule, modify it by removing the leftmost label."
+           {:exception, labels} -> tl(labels)
+           {:normal, labels} -> labels
+         end
       |> length
       |> +(extra_label_parts)
 
@@ -99,7 +164,7 @@ defmodule PublicSuffix do
     find_prevailing_exception_rule(labels, allowed_rule_types) ||
     find_prevailing_normal_rule(labels, allowed_rule_types) ||
     # "If no rules match, the prevailing rule is "*"."
-    ["*"]
+    {:normal, ["*"]}
   end
 
   data_file = Path.expand("../data/public_suffix_list.dat", __DIR__)
@@ -128,8 +193,7 @@ defmodule PublicSuffix do
   defp find_prevailing_exception_rule([], _allowed_rule_types), do: nil
   defp find_prevailing_exception_rule([_ | suffix] = domain_labels, allowed_rule_types) do
     if @exception_rules[domain_labels] in allowed_rule_types do
-      # "If the prevailing rule is a exception rule, modify it by removing the leftmost label."
-      suffix
+      {:exception, domain_labels}
     else
       find_prevailing_exception_rule(suffix, allowed_rule_types)
     end
@@ -140,9 +204,9 @@ defmodule PublicSuffix do
   defp find_prevailing_normal_rule([], _allowed_rule_types), do: nil
   defp find_prevailing_normal_rule([_ | suffix] = domain_labels, allowed_rule_types) do
     cond do
-      @exact_match_rules[domain_labels] in allowed_rule_types -> domain_labels
+      @exact_match_rules[domain_labels] in allowed_rule_types -> {:normal, domain_labels}
       # TODO: "Wildcards are not restricted to appear only in the leftmost position"
-      @wild_card_rules[["*" | suffix]] in allowed_rule_types -> domain_labels
+      @wild_card_rules[["*" | suffix]] in allowed_rule_types -> {:normal, ["*" | suffix]}
       true -> find_prevailing_normal_rule(suffix, allowed_rule_types)
     end
   end
