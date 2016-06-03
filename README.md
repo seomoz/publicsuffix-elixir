@@ -20,14 +20,6 @@ iex(3)> PublicSuffix.public_suffix("mysite.foo.bar.com")
 "com"
 iex(4)> PublicSuffix.public_suffix("mysite.foo.bar.co.uk")
 "co.uk"
-iex(5)> PublicSuffix.prevailing_rule("mysite.foo.bar.com")
-"com"
-iex(6)> PublicSuffix.prevailing_rule("mysite.example")
-"*"
-iex(7)> PublicSuffix.matches_explicit_rule?("mysite.foo.bar.com")
-true
-iex(8)> PublicSuffix.matches_explicit_rule?("mysite.example")
-false
 ```
 
 The publicsuffix.org data file contains both official ICANN records
@@ -49,6 +41,29 @@ iex(3)> PublicSuffix.registrable_domain("foo.github.io", ignore_private: true)
 "github.io"
 iex(4)> PublicSuffix.public_suffix("foo.github.io", ignore_private: true)
 "io"
+```
+
+## Working with Rules
+
+You can also gain access to the prevailing rule for a particular domain:
+
+``` iex
+iex(1)> PublicSuffix.prevailing_rule("mysite.foo.bar.com")
+"com"
+iex(2)> PublicSuffix.prevailing_rule("mysite.example")
+"*"
+```
+
+The value returned in the last example (`"*"`) is the fallback rule when
+there is no explicit matching rule defined in the rules file. If you
+just want to know if a domain matches an explicit matching rule, we
+provide a predicate for that:
+
+``` iex
+iex(1)> PublicSuffix.matches_explicit_rule?("mysite.foo.bar.com")
+true
+iex(2)> PublicSuffix.matches_explicit_rule?("mysite.example")
+false
 ```
 
 ## Installation
