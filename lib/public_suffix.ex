@@ -148,7 +148,7 @@ defmodule PublicSuffix do
            {:normal, labels} -> labels
          end
       |> length
-      |> +(extra_label_parts)
+      |> Kernel.+(extra_label_parts)
 
     if length(labels) >= num_labels do
       take_last_n(labels, num_labels)
