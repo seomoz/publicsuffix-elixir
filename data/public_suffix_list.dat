@@ -267,18 +267,14 @@ name.az
 pro.az
 biz.az
 
-// ba : https://en.wikipedia.org/wiki/.ba
+// ba : http://nic.ba/users_data/files/pravilnik_o_registraciji.pdf
 ba
-org.ba
-net.ba
+com.ba
 edu.ba
 gov.ba
 mil.ba
-unsa.ba
-unbi.ba
-co.ba
-com.ba
-rs.ba
+net.ba
+org.ba
 
 // bb : https://en.wikipedia.org/wiki/.bb
 bb
@@ -10693,6 +10689,13 @@ s3.eu-central-1.amazonaws.com
 // Submitted by Thomas Orozco <thomas@aptible.com>
 on-aptible.com
 
+// Association potager.org : https://potager.org/
+// Submitted by Lunar <jardiniers@potager.org>
+potager.org
+poivron.org
+sweetpepper.org
+pimienta.org
+
 // AVM : https://avm.de
 // Submitted by Andreas Weise <a.weise@avm.de>
 myfritz.net
@@ -10700,6 +10703,10 @@ myfritz.net
 // BetaInABox
 // Submitted by Adrian <adrian@betainabox.com>
 betainabox.com
+
+// Boxfuse : https://boxfuse.com
+// Submitted by Axel Fontaine <axel@boxfuse.com>
+boxfuse.io
 
 // CentralNic : http://www.centralnic.com/names/domains
 // Submitted by registry <gavin.brown@centralnic.com>
@@ -11321,6 +11328,10 @@ withyoutube.com
 // Hashbang : https://hashbang.sh
 hashbang.sh
 
+// Hasura : https://hasura.io
+// Submitted by Shahidh K Muhammed <shahidh@hasura.io>
+hasura-app.io
+
 // Heroku : https://www.heroku.com/
 // Submitted by Tom Maher <tmaher@heroku.com>
 herokuapp.com
@@ -11551,6 +11562,10 @@ vipsinaapp.com
 bounty-full.com
 alpha.bounty-full.com
 beta.bounty-full.com
+
+// SpaceKit : https://www.spacekit.io/
+// Submitted by Reza Akhavan <spacekit.io@gmail.com>
+spacekit.io
 
 // Synology, Inc. : https://www.synology.com/
 // Submitted by Rony Weng <ronyweng@synology.com>
