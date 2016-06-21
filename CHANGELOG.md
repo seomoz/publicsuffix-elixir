@@ -1,3 +1,8 @@
+### 0.4.0 / 2016-06-21
+[Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.3.0...v0.4.0)
+
+* Fix Elixir 1.3 warnings.
+
 ### 0.3.0 / 2016-06-03
 [Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.2.1...v0.3.0)
 
