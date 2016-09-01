@@ -6,14 +6,12 @@ defmodule PublicSuffix.RemoteFileFetcher do
     # this is only used at compile time or in one-off mix tasks --
     # so at deployed runtime, this is not used and these applications
     # are not needed.
-    :inets.start
-    :ssl.start
+    :hackney.start()
 
     url
-    |> to_char_list
-    |> :httpc.request
+    |> :hackney.request
     |> case do
-         {:ok, {{_, 200, _}, _headers, body}} -> {:ok, to_string(body)}
+         {:ok, 200, _headers, body_ref} -> :hackney.body(body_ref)
          otherwise -> {:error, otherwise}
        end
   end
