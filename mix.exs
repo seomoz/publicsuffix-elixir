@@ -73,7 +73,7 @@ defmodule Mix.Tasks.PublicSuffix.SyncFiles do
 
   def run(_) do
     File.mkdir_p!(@data_dir)
-    sync_file "https://publicsuffix.org/list/public_suffix_list.dat", "public_suffix_list.dat"
+    sync_file "https://raw.githubusercontent.com/publicsuffix/list/master/public_suffix_list.dat", "public_suffix_list.dat"
     sync_file "https://raw.githubusercontent.com/publicsuffix/list/master/tests/tests.txt", "tests.txt"
   end
 
