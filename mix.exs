@@ -27,6 +27,7 @@ defmodule PublicSuffix.Mixfile do
   defp deps do
     [
       {:idna, ">= 1.2.0 and < 3.0.0"},
+      {:hackney, "~> 1.6"},
       # ex_doc and earmark are necessary to publish docs to hexdocs.pm.
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:earmark, ">= 0.0.0", only: :dev},
@@ -72,7 +73,7 @@ defmodule Mix.Tasks.PublicSuffix.SyncFiles do
 
   def run(_) do
     File.mkdir_p!(@data_dir)
-    sync_file "https://publicsuffix.org/list/public_suffix_list.dat", "public_suffix_list.dat"
+    sync_file "https://raw.githubusercontent.com/publicsuffix/list/master/public_suffix_list.dat", "public_suffix_list.dat"
     sync_file "https://raw.githubusercontent.com/publicsuffix/list/master/tests/tests.txt", "tests.txt"
   end
 
