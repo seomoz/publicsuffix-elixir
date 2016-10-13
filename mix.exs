@@ -45,7 +45,7 @@ defmodule PublicSuffix.Mixfile do
       maintainers: ["Myron Marston", "Ben Kirzhner"],
       links: %{"GitHub" => "https://github.com/seomoz/publicsuffix-elixir",
                "Public Suffix List" => "https://publicsuffix.org/"},
-      files: ["lib", "priv", "data/public_suffix_list.dat",
+      files: ["lib", "data/public_suffix_list.dat",
               "mix.exs", "README.md", "LICENSE", "CHANGELOG.md"],
     ]
   end
