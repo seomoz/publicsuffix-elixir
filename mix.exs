@@ -52,7 +52,7 @@ defmodule PublicSuffix.Mixfile do
 
   defp aliases do
     [
-      "hex.publish": ["hex.publish", &tag_version/1, "hex.docs"],
+      "hex.publish": ["hex.publish", &tag_version/1],
     ]
   end
 
