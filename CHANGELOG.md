@@ -1,3 +1,11 @@
+### 0.5.0 / 2016-10-13
+[Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.4.0...v0.5.0)
+
+* Update data file to latest published public suffix list (Dejan Štrbac, #23).
+* Use `:unicode.characters_to_list/1` instead of `:xmerl_ucs.from_utf8/1`
+  to for unicode conversion to avoid need to install extra xmerl package
+  on some linux distros. (Dejan Štrbac, #23).
+
 ### 0.4.0 / 2016-06-21
 [Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.3.0...v0.4.0)
 
