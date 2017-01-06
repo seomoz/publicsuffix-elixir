@@ -7,10 +7,10 @@ defmodule PublicSuffix.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases,
-     description: description,
-     package: package,
-     deps: deps]
+     aliases: aliases(),
+     description: description(),
+     package: package(),
+     deps: deps()]
   end
 
   def application do
@@ -57,7 +57,7 @@ defmodule PublicSuffix.Mixfile do
   end
 
   defp tag_version(_args) do
-    version = Keyword.fetch!(project, :version)
+    version = Keyword.fetch!(project(), :version)
     System.cmd("git", ["tag", "-a", "-m", "Version #{version}", "v#{version}"])
     System.cmd("git", ["push", "origin"])
     System.cmd("git", ["push", "origin", "--tags"])
