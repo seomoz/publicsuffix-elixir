@@ -1,3 +1,10 @@
+### 0.6.0 / 2018-02-28
+[Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.5.0...v0.4.0)
+
+* Update data file to latest published public suffix list (Jason Axelson, #27 ).
+* Update IDNA dependency range (Jason Axelson, #26 ).
+* Fix Elixir 1.4 warnings (Rich Cavanaugh, #24 ).
+
 ### 0.5.0 / 2016-10-13
 [Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.4.0...v0.5.0)
 

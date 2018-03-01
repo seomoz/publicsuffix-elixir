@@ -106,6 +106,10 @@ on the needs of your project:
   project, you may want compilation to be deterministic. Compilation
   is also a bit faster when a new copy of the rules is not downloaded.
 
+## Updating the suffix list
+
+Run `mix public_suffix.sync_files` at a command prompt.
+
 ## Known Issues
 
 The [Public Suffix specification](https://publicsuffix.org/list/)
