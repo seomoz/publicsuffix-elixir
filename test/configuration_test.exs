@@ -21,14 +21,14 @@ defmodule PublicSuffix.ConfigurationTest do
 
     on_exit fn ->
       # restore things...
-      recompile_lib
+      recompile_lib()
       File.cp!(backup_file_name, cached_file_name)
       File.rm_rf!(temp_dir)
     end
   end
 
   test "compiles using a newly fetched copy of the rules file if so configured" do
-    recompile_lib
+    recompile_lib()
     assert get_public_suffix("foo.publicsuffix.elixir") == "publicsuffix.elixir"
     recompile_lib [{"PUBLIC_SUFFIX_DOWNLOAD_DATA_ON_COMPILE", "true"}]
     assert get_public_suffix("foo.publicsuffix.elixir") == "elixir"
@@ -37,7 +37,7 @@ defmodule PublicSuffix.ConfigurationTest do
   defp get_public_suffix(domain) do
     expression = "#{inspect domain} |> PublicSuffix.public_suffix |> IO.puts"
     assert {result, 0} = System.cmd "mix", ["run", "-e", expression]
-    result |> String.strip |> String.split("\n") |> List.last
+    result |> String.trim() |> String.split("\n") |> List.last
   end
 
   defp recompile_lib(env \\ []) do

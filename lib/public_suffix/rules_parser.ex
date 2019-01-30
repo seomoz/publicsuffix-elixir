@@ -31,18 +31,18 @@ defmodule PublicSuffix.RulesParser do
       # contains a rule."
       |> Stream.reject(&(&1 =~ ~r/^\s*$/ || String.starts_with?(&1, "//")))
       # "Each line is only read up to the first whitespace"
-      |> Stream.map(&String.rstrip/1)
+      |> Stream.map(&String.trim_trailing/1)
       |> Stream.flat_map(fn rule -> [rule, punycode_domain(rule)] end)
       # "An exclamation mark (!) at the start of a rule marks an exception to a
       # previous wildcard rule."
-      |> Enum.partition(&String.starts_with?(&1, "!"))
+      |> Enum.split_with(&String.starts_with?(&1, "!"))
 
     # TODO: "Wildcards are not restricted to appear only in the leftmost position"
-    {wild_card_rules, exact_match_rules} = Enum.partition(normal_rules, &String.starts_with?(&1, "*."))
+    {wild_card_rules, exact_match_rules} = Enum.split_with(normal_rules, &String.starts_with?(&1, "*."))
 
     exception_rules =
       exception_rules
-      |> Stream.map(&String.lstrip(&1, ?!))
+      |> Stream.map(&String.trim_leading(&1, "!"))
       |> to_domain_label_map(type)
 
     exact_match_rules = to_domain_label_map(exact_match_rules, type)
