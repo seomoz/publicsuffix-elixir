@@ -7,8 +7,8 @@ matrix:
     otp_release: 18.1
   - name: "1.6.6/otp19"
     elixir: 1.6.6
-    otp_release: 19.3.6.9
+    otp_release: 19.3
   - name: "1.8.0/otp20"
     elixir: 1.8.0
-    otp_release: 20.3.8.9
+    otp_release: 20.3
 script: "script/ci_build"
