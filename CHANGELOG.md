@@ -1,3 +1,8 @@
+### Unrealeased
+
+* Fix warnings up to Elixir v1.8.0
+  * Require Elixir 1.5
+
 ### 0.6.0 / 2018-02-28
 [Full Changelog](https://github.com/seomoz/publicsuffix-elixir/compare/v0.5.0...v0.4.0)
 

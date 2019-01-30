@@ -12,12 +12,12 @@ defmodule PublicSuffix.TestCaseGenerator do
     |> Stream.drop(@header_line_count)
     # Match on descriptive comment lines (which go before the test cases to which they apply)
     |> Stream.chunk_by(fn {line, _index} -> String.starts_with?(line, "// ") end)
-    |> Stream.chunk(2) # provides chunks of comment plus test cases matching the comment
+    |> Stream.chunk_every(2) # provides chunks of comment plus test cases matching the comment
     |> Stream.flat_map(&parse_group/1)
   end
 
   defp parse_group([[{"// " <> group_description, _}], test_cases]) do
-    group_description = String.rstrip(group_description, ?.)
+    group_description = String.trim_trailing(group_description, ".")
 
     test_cases
     |> Stream.with_index
@@ -41,7 +41,7 @@ defmodule PublicSuffix.TestCaseGenerator do
   end
 
   defp parse_arg("null"), do: nil
-  defp parse_arg(string), do: String.strip(string, ?')
+  defp parse_arg(string), do: String.trim(string, "'")
 
   defp public_suffix_output(nil, nil), do: nil
   # Inputs with a leading dot are a special case: the output should always be `nil`.
@@ -53,7 +53,7 @@ defmodule PublicSuffix.TestCaseGenerator do
     # public suffix outputs.
     input
     |> String.downcase
-    |> String.lstrip(?.)
+    |> String.trim_leading(".")
   end
   defp public_suffix_output(registrable_domain, _) do
     registrable_domain
