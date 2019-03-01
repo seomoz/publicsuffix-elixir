@@ -56,11 +56,15 @@ defmodule PublicSuffix.RulesParser do
   end
 
   @doc false
+  # We can only convert domain's to punycode so do not pass through operators
+  def punycode_domain("*" <> rule), do: "*" <> punycode_domain(rule)
+  def punycode_domain("!" <> rule), do: "!" <> punycode_domain(rule)
+
   def punycode_domain(rule) do
     rule
     |> :unicode.characters_to_list
-    |> :idna.to_ascii
-    |> to_string
+    |> :idna.encode(uts46: true)
+    |> to_string()
   end
 
   defp to_domain_label_map(rules, type) do
