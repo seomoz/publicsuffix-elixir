@@ -126,7 +126,7 @@ defmodule PublicSuffix.PublicSuffixTest do
     domain
     |> PublicSuffix.RulesParser.punycode_domain
     |> to_char_list
-    |> :idna.from_ascii
+    |> :idna.decode(uts46: true)
     |> to_string
   end
 end
