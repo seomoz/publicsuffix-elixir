@@ -4,7 +4,7 @@ defmodule PublicSuffix.Mixfile do
   def project do
     [app: :public_suffix,
      version: "0.6.0",
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
