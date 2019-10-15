@@ -7,10 +7,10 @@ defmodule PublicSuffix.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases,
-     description: description,
-     package: package,
-     deps: deps]
+     aliases: aliases(),
+     description: description(),
+     package: package(),
+     deps: deps()]
   end
 
   def application do
@@ -26,10 +26,10 @@ defmodule PublicSuffix.Mixfile do
 
   defp deps do
     [
-      {:idna, ">= 1.2.0 and < 3.0.0"},
+      {:idna, "~> 2.0.0"},
       # ex_doc and earmark are necessary to publish docs to hexdocs.pm.
-      {:ex_doc, ">= 0.0.0", only: :dev},
-      {:earmark, ">= 0.0.0", only: :dev},
+      {:ex_doc, ">= 0.21.0", only: :dev},
+      {:earmark, "~> 1.4", only: :dev},
     ]
   end
 
@@ -57,7 +57,7 @@ defmodule PublicSuffix.Mixfile do
   end
 
   defp tag_version(_args) do
-    version = Keyword.fetch!(project, :version)
+    version = Keyword.fetch!(project(), :version)
     System.cmd("git", ["tag", "-a", "-m", "Version #{version}", "v#{version}"])
     System.cmd("git", ["push", "origin"])
     System.cmd("git", ["push", "origin", "--tags"])
