@@ -3,7 +3,7 @@ defmodule PublicSuffix.Mixfile do
 
   def project do
     [app: :public_suffix,
-     version: "0.4.0",
+     version: "0.6.0",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -26,7 +26,7 @@ defmodule PublicSuffix.Mixfile do
 
   defp deps do
     [
-      {:idna, "~> 2.0.0"},
+      {:idna, "~> 6.0.0"},
       # ex_doc and earmark are necessary to publish docs to hexdocs.pm.
       {:ex_doc, ">= 0.21.0", only: :dev},
       {:earmark, "~> 1.4", only: :dev},
@@ -45,14 +45,14 @@ defmodule PublicSuffix.Mixfile do
       maintainers: ["Myron Marston", "Ben Kirzhner"],
       links: %{"GitHub" => "https://github.com/seomoz/publicsuffix-elixir",
                "Public Suffix List" => "https://publicsuffix.org/"},
-      files: ["lib", "priv", "data/public_suffix_list.dat",
+      files: ["lib", "data/public_suffix_list.dat",
               "mix.exs", "README.md", "LICENSE", "CHANGELOG.md"],
     ]
   end
 
   defp aliases do
     [
-      "hex.publish": ["hex.publish", &tag_version/1, "hex.docs"],
+      "hex.publish": ["hex.publish", &tag_version/1],
     ]
   end
 

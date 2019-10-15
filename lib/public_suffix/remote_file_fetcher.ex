@@ -13,7 +13,7 @@ defmodule PublicSuffix.RemoteFileFetcher do
     |> to_charlist
     |> :httpc.request
     |> case do
-         {:ok, {{_, 200, _}, _headers, body}} -> {:ok, to_string(body)}
+         {:ok, {{_, 200, _}, _headers, body}} -> {:ok, body}
          otherwise -> {:error, otherwise}
        end
   end

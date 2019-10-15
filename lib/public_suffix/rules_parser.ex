@@ -47,7 +47,6 @@ defmodule PublicSuffix.RulesParser do
 
     exact_match_rules = to_domain_label_map(exact_match_rules, type)
     wild_card_rules = to_domain_label_map(wild_card_rules, type)
-
     %{
       exception_rules: exception_rules,
       exact_match_rules: exact_match_rules,
@@ -56,11 +55,13 @@ defmodule PublicSuffix.RulesParser do
   end
 
   @doc false
+  def punycode_domain("!" <> rule), do: "!" <> punycode_domain(rule)
+  def punycode_domain("*." <> rule), do: "*." <> punycode_domain(rule)
   def punycode_domain(rule) do
     rule
-    |> :xmerl_ucs.from_utf8
-    |> :idna.to_ascii
-    |> to_string
+    |> :unicode.characters_to_list()
+    |> :idna.encode(uts46: true)
+    |> to_string()
   end
 
   defp to_domain_label_map(rules, type) do

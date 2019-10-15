@@ -68,15 +68,15 @@ false
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+The package can be installed as:
 
   1. Add public_suffix to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:public_suffix, "~> 0.1.0"}]
+          [{:public_suffix, "~> 0.5.0"}]
         end
 
-  2. Ensure public_suffix is started before your application:
+  2. If using Elixir < 1.4, then ensure public_suffix is started before your application:
 
         def application do
           [applications: [:public_suffix]]
@@ -105,6 +105,10 @@ on the needs of your project:
   all) ensures stable, consistent behavior. In the context of your
   project, you may want compilation to be deterministic. Compilation
   is also a bit faster when a new copy of the rules is not downloaded.
+
+## Updating the suffix list
+
+Run `mix public_suffix.sync_files` at a command prompt.
 
 ## Known Issues
 

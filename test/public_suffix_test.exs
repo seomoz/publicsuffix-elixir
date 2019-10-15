@@ -5,7 +5,7 @@ defmodule PublicSuffix.PublicSuffixTest do
 
   test_cases = [
     {"exact match", "foo.github.io", "foo.github.io", "github.io"},
-    {"wildcard", "foo.bar.api.githubcloud.com", "foo.bar.api.githubcloud.com", "githubcloud.com"},
+    {"wildcard", "foo.bar.elb.amazonaws.com", "foo.bar.elb.amazonaws.com", "amazonaws.com"},
     # The current rules file does not have any private exception rules, so we don't
     # have any tests for it :(.
   ]
@@ -30,7 +30,7 @@ defmodule PublicSuffix.PublicSuffixTest do
 
   test_cases_prevailing_private = [
     {"exact match", "foo.github.io", "github.io", "io"},
-    {"wildcard", "foo.bar.api.githubcloud.com", "*.api.githubcloud.com", "com"},
+    {"wildcard", "foo.bar.elb.amazonaws.com", "*.elb.amazonaws.com", "com"},
   ]
 
   for {rule_type, input, expected_with_private, expected_without_private} <- test_cases_prevailing_private do
@@ -126,7 +126,7 @@ defmodule PublicSuffix.PublicSuffixTest do
     domain
     |> PublicSuffix.RulesParser.punycode_domain
     |> to_charlist
-    |> :idna.from_ascii
+    |> :idna.decode(uts46: true)
     |> to_string
   end
 end

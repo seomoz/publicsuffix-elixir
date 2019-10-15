@@ -174,7 +174,8 @@ defmodule PublicSuffix do
     case fetch_remote_file("https://publicsuffix.org/list/public_suffix_list.dat") do
       {:ok, data} ->
         IO.puts "PublicSuffix: fetched fresh data file for compilation."
-        data
+        File.write!(data_file, data)
+        File.read!(data_file)
       {:error, error} ->
          raise """
          PublicSuffix: failed to fetch fresh data file for compilation:
