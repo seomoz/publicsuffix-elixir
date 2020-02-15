@@ -10,10 +10,10 @@ defmodule PublicSuffix.RemoteFileFetcher do
     :ssl.start
 
     url
-    |> to_char_list
+    |> to_charlist
     |> :httpc.request
     |> case do
-         {:ok, {{_, 200, _}, _headers, body}} -> {:ok, to_string(body)}
+         {:ok, {{_, 200, _}, _headers, body}} -> {:ok, :erlang.iolist_to_binary(body)}
          otherwise -> {:error, otherwise}
        end
   end

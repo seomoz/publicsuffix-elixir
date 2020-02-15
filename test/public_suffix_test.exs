@@ -125,8 +125,8 @@ defmodule PublicSuffix.PublicSuffixTest do
   defp roundtrip_through_punycoding(domain) do
     domain
     |> PublicSuffix.RulesParser.punycode_domain
-    |> to_char_list
-    |> :idna.from_ascii
+    |> to_charlist
+    |> :idna.decode(uts46: true)
     |> to_string
   end
 end
