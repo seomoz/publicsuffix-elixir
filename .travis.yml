@@ -2,6 +2,8 @@ sudo: false
 language: elixir
 otp_release:
   - 21.0
+  - 20.0
 elixir:
   - 1.9.1
+  - 1.8
 script: "script/ci_build"
